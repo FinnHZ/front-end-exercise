@@ -86,7 +86,6 @@
 
             // for circle with light
             var angle_l = 0;
-            var displaynum_l = '0%';
             var dashboard_chart_l = $('#dashboard_chart_l')
             var lefttop_l = $('#lefttop_l');
             var righttop_l = $('#righttop_l');
@@ -95,12 +94,11 @@
             var middlelayer_l = $('#middlelayer_l');
             var centercircle_l = $('#centercircle_l');
             setInterval(()=>{
-                displaynum_l = (angle_l/360*100).toFixed(2) + '%'
                 if(angle_l < 360){
-                    $.DynamicLight(angle_l,displaynum_l,middlelayer_l,lefttop_l,rightbottom_l,leftbottom_l,righttop_l,centercircle_l)
+                    $.DynamicLight(angle_l,middlelayer_l,lefttop_l,rightbottom_l,leftbottom_l,righttop_l,centercircle_l)
                     angle_l += 1
                 }else{
-                    $.DynamicLight(angle_l,displaynum_l,middlelayer_l,lefttop_l,rightbottom_l,leftbottom_l,righttop_l,centercircle_l)
+                    $.DynamicLight(angle_l,middlelayer_l,lefttop_l,rightbottom_l,leftbottom_l,righttop_l,centercircle_l)
                     angle_l = 0
                 }
             },5/360*1000) //  increase 1 angle every 10/360*1000 milliseconde
