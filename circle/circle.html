@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="../static/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="./myLib_circle.js"></script>
+    <link rel="stylesheet" href="./circle.css" />
+    <title>Circle</title>
+</head>
+<body>
+    <div id="dashboard_chart_p">
+        <div id="outcoat_p">
+            <div id="lefttop_p" class="fan_p"></div> 
+            <div id="righttop_p"  class="fan_p"></div>
+            <div id="leftbottom_p"  class="fan_p"></div> 
+            <div id="rightbottom_p" class="fan_p"></div>
+            <div id="middlelayer_p"></div>
+        </div>
+    </div>
+
+    <div id="dashboard_chart">
+        <div id="outcoat">
+            <div id="lefttop" class="fan"></div> 
+            <div id="righttop"  class="fan"></div>
+            <div id="leftbottom"  class="fan"></div> 
+            <div id="rightbottom" class="fan"></div>
+            <div id="middlelayer"></div>
+            <div id="centercircle"></div>
+        </div>
+    </div>
+
+    <div id="dashboard_chart_l">
+        <div id="outcoat_l">
+            <div id="lefttop_l" class="fan_l"></div> 
+            <div id="righttop_l"  class="fan_l"></div>
+            <div id="leftbottom_l"  class="fan_l"></div> 
+            <div id="rightbottom_l" class="fan_l"></div>
+            <div id="middlelayer_l"></div>
+            <div id="centercircle_l"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(function(){
+            // for pie
+            var angle_p = 0;
+            var dashboard_chart_p = $('#dashboard_chart_p')
+            var lefttop_p = $('#lefttop_p');
+            var righttop_p = $('#righttop_p');
+            var leftbottom_p = $('#leftbottom_p');
+            var rightbottom_p = $('#rightbottom_p');
+            var middlelayer_p = $('#middlelayer_p');
+            setInterval(()=>{
+                if(angle_p < 360){
+                    $.DynamicPie(angle_p,middlelayer_p,lefttop_p,rightbottom_p,leftbottom_p,righttop_p)
+                    angle_p += 1
+                }else{
+                    $.DynamicPie(angle_p,middlelayer_p,lefttop_p,rightbottom_p,leftbottom_p,righttop_p)
+                    angle_p = 0
+                }
+            },30/360*1000) // increase 1 angle every 30/360*1000 milliseconde
+
+
+            // for circle
+            var angle = 0;
+            var displaynum = '0%';
+            var dashboard_chart = $('#dashboard_chart')
+            var lefttop = $('#lefttop');
+            var righttop = $('#righttop');
+            var leftbottom = $('#leftbottom');
+            var rightbottom = $('#rightbottom');
+            var middlelayer = $('#middlelayer');
+            var centercircle = $('#centercircle');
+            setInterval(()=>{
+                displaynum = (angle/360*100).toFixed(2) + '%'
+                if(angle < 360){
+                    $.DynamicCircle(angle,displaynum,middlelayer,lefttop,rightbottom,leftbottom,righttop,centercircle)
+                    angle += 1
+                }else{
+                    $.DynamicCircle(angle,displaynum,middlelayer,lefttop,rightbottom,leftbottom,righttop,centercircle)
+                    angle = 0
+                }
+            },10/360*1000) //  increase 1 angle every 10/360*1000 milliseconde
+
+            // for circle with light
+            var angle_l = 0;
+            var displaynum_l = '0%';
+            var dashboard_chart_l = $('#dashboard_chart_l')
+            var lefttop_l = $('#lefttop_l');
+            var righttop_l = $('#righttop_l');
+            var leftbottom_l = $('#leftbottom_l');
+            var rightbottom_l = $('#rightbottom_l');
+            var middlelayer_l = $('#middlelayer_l');
+            var centercircle_l = $('#centercircle_l');
+            setInterval(()=>{
+                displaynum_l = (angle_l/360*100).toFixed(2) + '%'
+                if(angle_l < 360){
+                    $.DynamicLight(angle_l,displaynum_l,middlelayer_l,lefttop_l,rightbottom_l,leftbottom_l,righttop_l,centercircle_l)
+                    angle_l += 1
+                }else{
+                    $.DynamicLight(angle_l,displaynum_l,middlelayer_l,lefttop_l,rightbottom_l,leftbottom_l,righttop_l,centercircle_l)
+                    angle_l = 0
+                }
+            },5/360*1000) //  increase 1 angle every 10/360*1000 milliseconde
+
+
+        })
+
+    </script>
+
+    
+</body>
+</html>
