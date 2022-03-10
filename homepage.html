@@ -1,31 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=no">
-        <link rel="stylesheet" type="text/css" href="" />
-        <script type="text/javascript" src=""></script>
-        <script type="text/javascript" src=""></script>
-        <link rel="stylesheet" href="" />
-        <link rel="Shortcut Icon" href="" type="image/x-icon" />
-        <title>Home Page</title>
-        
-    </head>
-    <body>
-
-        <div>
-            <a href="./circle/circle.html">
-                <button>Circle</button>
-            </a>
-            
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="./static/js/jquery-3.6.0.min.js"></script>
+    <!-- <script type="text/javascript" src="../static/js/myLib.js"></script>
+    <script type="text/javascript" src="../static/js/myLib_js.js"></script> -->
+    <link rel="stylesheet" href="./homepage.css" />
+    <title>home</title>
+</head>
+<body>
+    
+    <div id="frontEnd">
+        <img id="paintingFrame" src="./static/img/homepage/paintingFrame.png" />
+        <div id="hiddenBorder">
+            <img id="viewPicture" src="./static/img/homepage/painting.jpg" />
+            <div id="viewCover"></div>
+            <div id="viewCover_small"></div>
+            <img id="brush" src="./static/img/homepage/paint_brush_1.png" />
         </div>
-       
+        
+    </div>
 
-        <script type="text/javascript">
-       
-        </script>
+   
+    <div id="backEnd"></div>
+   
+    <div id="trangle"></div>
+    
 
-    </body>
+    <script type="text/javascript">
+        $(function(){
+            // for frontend logo
+            var frontEnd = $("#frontEnd");
+            var paintingFrame = $("#paintingFrame");
+            var hiddenBorder =$("#hiddenBorder");
+            var viewPicture = $("#viewPicture");
+            var viewCover =$("#viewCover");
+            var viewCover_small = $("#viewCover_small");
+            var brush = $("#brush");
+            var borderTop = hiddenBorder.offset().top;
+            var borderLeft = hiddenBorder.offset().left;
+            var borderHeight = hiddenBorder.height();
+            var borderWidth = hiddenBorder.width();
+            var viewCoverTop = borderTop + borderHeight
+            var positionMarker = hiddenBorder.height();
+            var topMove = 0;
+            var shakeFlag = 0;
+    
+
+            paintingFrame.css({"left": (borderLeft-8) + "px", "top": (borderTop-10) +"px"});
+
+            frontEnd.mouseenter(function(){
+                const stepConstant = 10;
+                const invervalNum = 2000;
+                frontEndDropInterval_f = null;
+                topMove += stepConstant;
+                viewCover.css({"top":topMove +"px" })
+                viewCover_small.animate({"left": borderWidth + "px"},invervalNum-50, function(){
+                    viewCover_small.css({"left": "0px", "top":topMove +"px"})
+                    viewCover.css({"top":(topMove+stepConstant) +"px" })
+                })
+                brush.animate({"left": (borderWidth) + "px"},invervalNum-50, function(){
+                    brush.css({"left": "0px", "top": topMove +"px"})
+                });
+
+                paintInterval = setInterval(function(){
+                    if(shakeFlag == 0){
+                        brush.css({'transform':'rotate(0deg)'});
+                        shakeFlag = 1;
+                    }else{
+                        brush.css({'transform':'rotate(10deg)'});
+                        shakeFlag = 0;
+                    }
+                },100)
+
+                frontEndDropInterval_f = setInterval(function(){
+                    topMove += stepConstant;
+                    
+                    if(positionMarker > 0){
+                        viewCover_small.animate({"left": borderWidth + "px"},invervalNum-50, function(){
+                            viewCover_small.css({"left": "0px", "top":topMove +"px"})
+                            viewCover.css({"top":(topMove+stepConstant) +"px" })
+                        })
+                        brush.animate({"left": (borderWidth) + "px"},invervalNum-50, function(){
+                            brush.css({"left": 0+"px", "top": topMove +"px"})
+                        })
+                    }else{
+                        topMove = 0;
+                        positionMarker = hiddenBorder.height();
+                        viewCover.css({"left": "0px", "top":"0px" });
+                        viewCover_small.css({"left": "0px", "top":"0px"});
+                        brush.css({"left": "0px", "top": "0px"})
+                        viewCover_small.animate({"left": borderWidth + "px"},invervalNum-50, function(){
+                            viewCover_small.css({"left": "0px", "top":topMove +"px"})
+                            viewCover.css({"top":(topMove+stepConstant) +"px" })
+                        });
+                        // brush.animate({"left": (borderWidth) + "px"},invervalNum-50, function(){
+                        //     brush.css({"left": "0px", "top": topMove +"px"})
+                        // });
+                    };
+                    
+                    positionMarker -= stepConstant;
+                }, invervalNum)
+            });
+
+            frontEnd.mouseleave(function(){
+                clearInterval(frontEndDropInterval_f);
+                clearInterval(paintInterval);
+                topMove = 0;
+                positionMarker = hiddenBorder.height();
+                setTimeout(function(){
+                    viewCover.css({"left": "0px", "top":"0px" });
+                    viewCover_small.css({"left": "0px", "top":"0px"});
+                },500)
+            })
+
+
+            // for backend logo
+            var backEnd = $('#backEnd');
+            var marginOrigin = 600; //  must equal tp the corresponding number of css file
+            var shadowDistance = -5; // must equal tp the corresponding number of css file(next to 'below')
+            var shadowArea = 0; // must equal tp the corresponding number of css file(next to 'transparent')
+            var shadowConcentration = 0.9; // must equal tp the corresponding number of css file(in the rgb bracket)
+            var breathNum = 0; // for control the breath direction
+            var breathEndshakeInterval_b = null;
+            
+            backEnd.mouseenter(function(){
+                breathNum = 0
+                backEnd.animate({"opacity":0.1, "width":195 + "px", "height":195 + "px"},900, function(){breathNum = 1});
+                breathEndshakeInterval_b = setInterval(function(){
+                    if(breathNum == 0){
+                        backEnd.animate({"opacity":0.1, "width":195 + "px", "height":195 + "px"},900, function(){
+                        breathNum = 1
+                        })  // the value of "opacity" must be greater than 0, otherwise mouseover will invalid
+                    }else if(breathNum == 1){
+                        backEnd.animate({"opacity":1, "width":200 + "px", "height":200 + "px"},900, function(){
+                        breathNum = 0
+                        })  
+                    }
+                },1000)  // the number of position of '900' must be less than that of '1000'
+            });
+
+            backEnd.mouseleave(function(){
+                clearInterval(breathEndshakeInterval_b);
+                setTimeout(function(){
+                    backEnd.css({"opacity":1, "width":"200px", "height":"200px"});
+                },500)
+                
+            });
+
+            backEnd.click(function(){
+                let backInterval = setInterval(function(){
+                    if(marginOrigin >= 0){
+                        marginOrigin -= 600/200;
+                        shadowDistance += 600/200;
+                        shadowArea += 50/200;
+                        shadowConcentration -= 0.9/200
+                        backEnd.css({
+                            "margin": marginOrigin + "px 0 0 200px",
+                            "-webkit-box-reflect": "below " + shadowDistance + "px -webkit-linear-gradient(transparent " + shadowArea + "%, rgba(255,255,255, " + shadowConcentration + "))",
+                        })
+                    }else{
+                        clearInterval(backInterval)
+                    }
+                },10)
+                
+            });
+            
+        })
+
+    </script>
+
+    
+</body>
 </html>
-
