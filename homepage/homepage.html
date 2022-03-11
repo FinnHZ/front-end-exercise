@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type="text/javascript" src="./static/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="../static/js/jquery-3.6.0.min.js"></script>
     <!-- <script type="text/javascript" src="../static/js/myLib.js"></script>
     <script type="text/javascript" src="../static/js/myLib_js.js"></script> -->
     <link rel="stylesheet" href="./homepage.css" />
@@ -13,12 +13,12 @@
 <body>
     
     <div id="frontEnd">
-        <img id="paintingFrame" src="./static/img/homepage/paintingFrame.png" />
+        <img id="paintingFrame" src="../static/img/homepage/paintingFrame.png" />
         <div id="hiddenBorder">
-            <img id="viewPicture" src="./static/img/homepage/painting.jpg" />
+            <img id="viewPicture" src="../static/img/homepage/painting.jpg" />
             <div id="viewCover"></div>
             <div id="viewCover_small"></div>
-            <img id="brush" src="./static/img/homepage/paint_brush_1.png" />
+            <img id="brush" src="../static/img/homepage/paint_brush_1.png" />
         </div>
         
     </div>
@@ -126,21 +126,61 @@
             var breathNum = 0; // for control the breath direction
             var breathEndshakeInterval_b = null;
             
+
+            // breath version===================================================
+            // backEnd.mouseenter(function(){
+            //     breathNum = 0
+            //     backEnd.animate({"opacity":0.1, "width":195 + "px", "height":195 + "px"},900, function(){breathNum = 1});
+            //     breathEndshakeInterval_b = setInterval(function(){
+            //         if(breathNum == 0){
+            //             backEnd.animate({"opacity":0.1, "width":195 + "px", "height":195 + "px"},900, function(){
+            //             breathNum = 1
+            //             })  // the value of "opacity" must be greater than 0, otherwise mouseover will invalid
+            //         }else if(breathNum == 1){
+            //             backEnd.animate({"opacity":1, "width":200 + "px", "height":200 + "px"},900, function(){
+            //             breathNum = 0
+            //             })  
+            //         }
+            //     },1000)  // the number of position of '900' must be less than that of '1000'
+            // });
+            //=================================================== breath version
+
+
+            // heart version===================================================
             backEnd.mouseenter(function(){
-                breathNum = 0
-                backEnd.animate({"opacity":0.1, "width":195 + "px", "height":195 + "px"},900, function(){breathNum = 1});
+                let breathNum = 0;
+                let amplitudeHeart = 20;
+                let amplitudeHeart_second = 15;
+                let normalSize = 200;
+                let shrinkSize = 195;
+                let breathFrequency = 1000;
+
+                backEnd.animate({"opacity":0.1, "width":shrinkSize + "px", "height":shrinkSize + "px"},(breathFrequency-100), function(){breathNum = 1});
                 breathEndshakeInterval_b = setInterval(function(){
                     if(breathNum == 0){
-                        backEnd.animate({"opacity":0.1, "width":195 + "px", "height":195 + "px"},900, function(){
+                        backEnd.animate({"opacity":0.1, "width":shrinkSize + "px", "height":shrinkSize + "px"},(breathFrequency-100), function(){  // No.5
                         breathNum = 1
                         })  // the value of "opacity" must be greater than 0, otherwise mouseover will invalid
                     }else if(breathNum == 1){
-                        backEnd.animate({"opacity":1, "width":200 + "px", "height":200 + "px"},900, function(){
-                        breathNum = 0
+                        backEnd.animate({"opacity":1, "width":normalSize + "px", "height":normalSize + "px"},500, function(){ //No.0
+                            backEnd.animate({"width":(normalSize+amplitudeHeart) + "px", "height":(normalSize+amplitudeHeart) + "px"},100,function(){ //No.1
+                                backEnd.css({"width":normalSize + "px", "height":normalSize + "px"})
+                                setTimeout(function(){
+                                    backEnd.animate({"width":(normalSize+amplitudeHeart_second) + "px", "height":(normalSize+amplitudeHeart_second) + "px"},100,function(){  //No.2
+                                        backEnd.animate({"width":normalSize + "px", "height":normalSize + "px"},100,function(){  //No.3
+                                            breathNum = 0
+                                        })                                  
+                                    })
+                                },100)  //No.4
+                            // !! the value of complete time usage shoul be like this:  (No.5 == No.0 + No.1 + No.2 + No.3 + No.4) && (No.0 == No.1 + No.2 + No.3 + No.4)
+                            })    
                         })  
                     }
-                },1000)  // the number of position of '900' must be less than that of '1000'
+                },breathFrequency)  // the number of position of '900' must be less than that of '1000'
             });
+            //=================================================== heart version
+
+
 
             backEnd.mouseleave(function(){
                 clearInterval(breathEndshakeInterval_b);
@@ -149,6 +189,11 @@
                 },500)
                 
             });
+            
+
+
+
+
 
             backEnd.click(function(){
                 let backInterval = setInterval(function(){

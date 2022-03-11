@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+         <meta charset="UTF-8">
+         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+         <title>jq40_ built-in_plug-in validation</title>
+         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+         integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+         <style type="text/css">
+  
+        </style>
+
+    </head>
+ 
+    <body>
+
+        <!-- part1: show/hide -->
+        <div id="mobileJD" style="width:100px; height: 50px; border: 1px solid black; background-color: white;">
+            <ul id="ul_mobileJD">Hover</ul>
+            <!-- <div id="MobileJD_add" style="border: 1px solid black"></div> -->
+        </div>
+
+        <!-- part2: search help -->
+        <div id="searchpart" style="height: 50px; border: 1px solid black">
+            <input id="searchbox" style="width:70px;" />
+            <div id="searchelp" style="display: none;">
+                <p>help1</p>
+                <p>help2</p>
+                <p>help3</p>
+                <p>help4</p>
+                <p>help5</p>
+                <p>help6</p>
+                <p>help7</p>
+            </div>
+        </div>
+
+        <!--part3: magnifier -->
+        <div id="magnifier_part" style="background-color: aqua;width:0%; height:0%">
+            <img id="huoyinggaoqing_s" src="../static/img/magnifying/huoyinggaoqing-s.jpg" />
+            <span id="mask" style="position:absolute;width: 50px; height:50px; background-color:rgb(45,60,79,0.5); left:0px; top:0px; display: none;pointer-events: none;"></span>  
+        </div>
+
+        <div id="magnifier_magnifier" style="border:3px solid black; width:250px; height: 250px;overflow: hidden;" >
+            <img id="huoyinggaoqing" src="../static/img/magnifying/huoyinggaoqing.jpg" style="display: none;position:relative;pointer-events: none;"/>
+        </div>
+
+
+        <script type="text/javascript" src="../static/js/jquery-3.6.0.min.js"></script>
+        <!-- <script type="text/javascript" src="js/jq43-47_simulate.js"></script> -->
+        <script type="text/javascript">
+
+        /*
+        1. 利用 冒泡原理，将一些事件加在父元素上，使子元素也具有同样的事件动作，可以防止特殊情况失效的可能;
+        2. 可以利用一定规律设置id，使得可以同时操作某些元素，比如id由两部分组成，xxxx_items,"_"之前是可变部分，
+           用于区分不同id，"_"之后是固定部分，用于表示规律；当然也可以采用其他比如class或者name属性来指定可以统一利用的规，
+           这样以来，有些不同元素的相同动作就可以依靠这些相同规律的部分来统一实现，减少重复代码；
+        3. on 可以为多个动作events增加监听，动作名都在同一对引号内，但是用空格隔开；
+        4. ！！！！对同一对象的不同动作，不一定要针对同一个属性（id/name/...) 去绑定一个change动作触发
+                               完全可以针对同一个对象的同一个属性的不同值 进行绑定，
+                               比如一个div id="id_1"的时候 div可用，当我们不需要它可用的时候，把通过attr去更改id的值为 id_2,
+                               这样原本绑定在#id_1上的动作就不生效了，#id_2上可以不绑定动作，也可以绑定一些不让它可用的动作。
+
+
+        */
+
+        //part1:同样的动作，也可以通过预先设置好要展开的div，属性display设置为 none, 需要展开时， 就调用内置show()方法，需要隐藏时就调用内置hide()方法，更简洁方便。
+        $('#mobileJD').hover(function(){
+            $('<div id="MobileJD_add" style="border: 1px solid black;background-color: white;"></div>"').appendTo('#mobileJD');
+            $('#MobileJD_add').animate({
+                width:300, 
+                height: 300 
+            },2000)
+        },function(){
+            $('#MobileJD_add').remove();
+        });
+
+        
+
+        //part2: search help
+        // function search(){
+        $.search = function(){
+            $('#searchbox').on('focus keyup', function(){   // ！！！这里，on可以为多个动作events增加监听，动作名都在同一对引号内，但是用空格隔开；必须这里就是同时监测输入框获取焦点（focus） 和 键盘按键抬起（keyup）两个事件
+                //这里需要确保键盘按键抬起后，输入框内有非纯空格的值才触发
+                var text = this.value.trim();
+                // var text = $(this).val().trim();
+                if(text){
+                    $('#searchelp').show()
+                }
+            })
+            .blur(function(){
+                $('#searchelp').hide()
+            })
+        }
+
+        // search()
+        $.search();
+
+        var smalll_left = $('#huoyinggaoqing_s').offset().left;
+        var smalll_top = $('#huoyinggaoqing_s').offset().top;
+        var small_width = $('#huoyinggaoqing_s').width();
+        var small_height = $('#huoyinggaoqing_s').height();
+
+        var small_section = $('#magnifier_part');
+        var mask_width = 50;
+        var mask_height = 50;
+
+
+        var width_large = $('#huoyinggaoqing').width();
+        var height_large = $('#huoyinggaoqing').height();
+                
+
+        var left_large = $('#magnifier_magnifier').offset().left;
+        var large_top = $('#magnifier_magnifier').offset().top;
+
+        //part3: magnifier
+        small_section.hover( function () {
+            $('#mask').show();
+            $('#huoyinggaoqing').show();
+            //直接在hover里面动态增加 鼠标移动监听
+            small_section.mousemove(function(event) {  // 此处定义 event 是为了代表 鼠标移动 事件本身，为后面获取鼠标移动的 实时坐标 准备
+                
+
+                //事件 坐标: 即 鼠标移动时  鼠标移动这个事件 相对于 鼠标移动事件绑定的对象（small_section） 的  左上角  的相对坐标。
+                var eventLeft = event.offsetX;
+                var eventTop = event.offsetY;
+
+                //计算出 小方块区域（放大镜区域）的坐标，根据以上事件坐标
+                var left_update = smalll_left + eventLeft - mask_width/2;
+                var top_update = smalll_top + eventTop - mask_height/2;
+
+                // 通过小方块区域一旦超出小图边界，立马矫正其坐标位置 使小方块区域永不超出 小图区域
+                if(left_update < smalll_left){
+                    left_update = smalll_left
+                }else if(left_update > smalll_left+small_width-mask_width){
+                    left_update = smalll_left+small_width-mask_width
+                };
+
+                if(top_update < smalll_top){
+                    top_update = smalll_top
+                }else if(top_update > smalll_top+small_height-mask_height){
+                    top_update = smalll_top+small_height-mask_height
+                };
+
+                // console.log(smalll_left, smalll_top, eventLeft, eventTop, left_update, top_update)
+                // 在鼠标移动事件中对 放大镜小方块 $('#mask') 的 坐标进行更新，根据鼠标的 坐标
+                $('#mask').css({
+                    left:left_update,
+                    top:top_update
+                });
+
+                //通过以上小方块 相对小图的 位置 算出移动距离相对于小图宽度的比例，通过比例相同来 计算 大图需要移动的位置
+                var rate_distance_left = ($('#mask').offset().left-smalll_left)/small_width;
+                var rate_distance_top = ($('#mask').offset().top-smalll_top)/small_height;
+               
+
+                /*
+                由于大图所在的框（父元素）的overflow:hidden会和 大图（子元素）设置的position:absolute 出现冲突，
+                所以这里不管父元素使用何种位置类型，子元素位置类型始终用 relative，避免冲突，这样以来，
+                这里更新子元素的位置坐标就应该使用相对位置坐标，如下：
+                */
+                var update_left_large = -width_large*rate_distance_left;
+                var update_top_large = -height_large*rate_distance_top;
+
+                console.log(left_large,large_top, $('#huoyinggaoqing').offset().left,$('#huoyinggaoqing').offset().top,update_left_large,update_top_large)
+               
+                // 更新大图位置 ，达到 放大效果 （障眼法）
+                $('#huoyinggaoqing').css({
+                    left:update_left_large,
+                    top:update_top_large
+                })
+            })
+        },function () {
+            $('#mask').hide();
+            $('#huoyinggaoqing').hide()
+        })
+
+
+     
+        </script>
+ 
+         
+     
+ 
+    </body>
+ 
+</html>
